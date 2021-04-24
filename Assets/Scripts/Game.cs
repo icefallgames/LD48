@@ -5,6 +5,9 @@ using UnityEngine.U2D;
 
 public class Game : MonoBehaviour
 {
+
+
+
     public Camera Camera;
     public Transform LevelParent;
 

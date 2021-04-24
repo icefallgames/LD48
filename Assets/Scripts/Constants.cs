@@ -19,6 +19,7 @@ public struct Constants
         tx.position = position;
     }
 
-    public const char WallPiece = 'W';
-    public const char PlayerPiece = 'P';
+    public const int WallPiece = 1;
+    public const int SupportPiece = 2;
+    public const int PlayerPiece = 3;
 }
