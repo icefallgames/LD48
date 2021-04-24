@@ -10,4 +10,15 @@ public struct Constants
     public float CelHeight; // In world units
     public Vector2 TopLeft;
     public Transform Parent;
+
+    public void SyncObjectPosition(Transform tx, int x, int y)
+    {
+        Vector2 position = TopLeft;
+        position.x += CelWidth * x;
+        position.y -= CelHeight * y;
+        tx.position = position;
+    }
+
+    public const char WallPiece = 'W';
+    public const char PlayerPiece = 'P';
 }

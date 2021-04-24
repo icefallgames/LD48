@@ -15,3 +15,5 @@ MonoBehaviour:
   Data: {fileID: 4900000, guid: f7a58967a73bea54586b84b57ebd544d, type: 3}
   LevelConstants:
     Wall: {fileID: 3056469456349167456, guid: 703d0ec13394a484fb6b21d562f9344c, type: 3}
+    Player: {fileID: 3056469456349167456, guid: a7825e1b3bde92b498beaae5e160c0ce,
+      type: 3}
