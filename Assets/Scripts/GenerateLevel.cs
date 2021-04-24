@@ -5,8 +5,17 @@ using System.Text.RegularExpressions;
 
 public static class GenerateLevel
 {
-    public static GeneratedLevel Generate(ref Constants constants, Level level, ref GameObject playerObject)
+    public static GeneratedLevel Generate(ref Constants constants, Level level, ref GameObject playerObject, Transform fixedParent)
     {
+        // Make the ceiling (fixed to camera)
+        Vector3 ceilingPiecePos = constants.TopLeft;
+        ceilingPiecePos.z = -1f; // In front of stuff
+        for (int i = 0; i < constants.Width; i++)
+        {
+            GameObject.Instantiate(level.LevelConstants.DeathCeiling, ceilingPiecePos, Quaternion.identity, fixedParent);
+            ceilingPiecePos.x += constants.CelWidth;
+        }
+
         GeneratedLevel generatedLevel = new GeneratedLevel();
         generatedLevel.Level = level;
 

@@ -7,4 +7,5 @@ public struct LevelConstants
 {
     public GameObject Wall;
     public GameObject Player;
+    public GameObject DeathCeiling;
 }

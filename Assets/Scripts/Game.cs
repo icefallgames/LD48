@@ -9,9 +9,12 @@ public class Game : MonoBehaviour
     public MechanicParameters MechanicParameters;
 
     public Camera Camera;
+    private int yCamera;
     public Transform LevelParent;
 
     public Level[] Levels;
+
+    public GameObject DeathParticles;
 
     private Constants constants;
     private PixelPerfectCamera pixelPerfectCamera;
@@ -21,7 +24,7 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cameraRootPosition = this.transform.position;
+        cameraRootPosition = Camera.transform.position;
 
         pixelPerfectCamera = Camera.GetComponent<PixelPerfectCamera>();
         constants.Width = pixelPerfectCamera.refResolutionX / 16;
@@ -42,28 +45,77 @@ public class Game : MonoBehaviour
         center.y += (((float)constants.Height * 0.5f) - 0.5f) * constants.CelHeight; // y is flipped
         constants.TopLeft = center;
 
+        ManifestLevel(currentLevel);
+    }
 
+    private int currentLevel;
 
-
-        /// TEST!
-        /// 
-        generatedLevel = GenerateLevel.Generate(ref constants, Levels[0], ref playerObject);
+    void ManifestLevel(int index)
+    {
+        Camera.transform.position = cameraRootPosition;
+        yCamera = 0;
+        generatedLevel = GenerateLevel.Generate(ref constants, Levels[index], ref playerObject, Camera.transform);
     }
 
     private GeneratedLevel generatedLevel;
     private GameObject playerObject;
 
+    private void DestroyLevelObjects()
+    {
+        // The player
+        GameObject.Destroy(playerObject);
+        // The level objects
+        foreach (Transform child in LevelParent)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        // the ceilling
+        foreach (Transform child in Camera.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        generatedLevel = null;
 
+    }
+
+    private bool isResetting = false;
+    private IEnumerator Reset(bool shouldDie)
+    {
+        isResetting = true;
+
+        if (shouldDie)
+        {
+            // Blood
+            GameObject.Instantiate(DeathParticles, playerObject.transform.position + new Vector3(0, 0, -2), Quaternion.identity, LevelParent);
+
+            yield return new WaitForSeconds(2.0f);
+        }
+
+        DestroyLevelObjects();
+
+        yield return new WaitForSeconds(0.5f);
+        isResetting = false;
+
+        // Regenerate
+        ManifestLevel(currentLevel);
+    }
 
     // Update is called once per frame
     void Update()
     {
-        if (!isDoingMove)
+        if (!isDoingMove && !isResetting)
         {
-            PlayerController pc = playerObject.GetComponent<PlayerController>();
-            if (pc.MovePlayer(generatedLevel, ref constants))
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                StartCoroutine(DoAMove(pc));
+                StartCoroutine(Reset(false));
+            }
+            else
+            {
+                PlayerController pc = playerObject.GetComponent<PlayerController>();
+                if (pc.MovePlayer(generatedLevel, ref constants))
+                {
+                    StartCoroutine(DoAMove(pc));
+                }
             }
         }
     }
@@ -112,8 +164,8 @@ public class Game : MonoBehaviour
 
             // Now move the camera (this might kill the player)
             Vector3 cameraStartPos = Camera.transform.position;
-            Vector3 cameraEndPos = cameraStartPos;
-            cameraEndPos.y -= constants.CelHeight;
+            yCamera++; // Our integer thing
+            Vector3 cameraEndPos = cameraRootPosition + new Vector3(0, - yCamera * constants.CelHeight, 0);
             float time = 0;
             while (time < MechanicParameters.LevelFallTime)
             {
@@ -129,6 +181,17 @@ public class Game : MonoBehaviour
                     );
 
                 yield return null;
+            }
+
+            //Debug.LogFormat("Camera {0}    Player: {1}", yCamera, pc.Y);
+
+            if (!playerFell)
+            {
+                // If they fell, there's currently no way they could die by ceiling
+                if (pc.Y <= yCamera)
+                {
+                    StartCoroutine(Reset(shouldDie: true));
+                }
             }
         }
 

@@ -17,3 +17,5 @@ MonoBehaviour:
     Wall: {fileID: 3056469456349167456, guid: 703d0ec13394a484fb6b21d562f9344c, type: 3}
     Player: {fileID: 3056469456349167456, guid: a7825e1b3bde92b498beaae5e160c0ce,
       type: 3}
+    DeathCeiling: {fileID: 3084385760389221117, guid: 38cf8b43a4fb84a46a1518c1c483ff01,
+      type: 3}
