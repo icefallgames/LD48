@@ -6,7 +6,7 @@ using UnityEngine.U2D;
 public class Game : MonoBehaviour
 {
 
-
+    public MechanicParameters MechanicParameters;
 
     public Camera Camera;
     public Transform LevelParent;
@@ -53,37 +53,85 @@ public class Game : MonoBehaviour
     private GeneratedLevel generatedLevel;
     private GameObject playerObject;
 
+
+
     // Update is called once per frame
     void Update()
     {
-        PlayerController pc = playerObject.GetComponent<PlayerController>();
-        if (pc.MovePlayer(generatedLevel, ref constants))
+        if (!isDoingMove)
         {
-            MoveCameraDown(pc);
+            PlayerController pc = playerObject.GetComponent<PlayerController>();
+            if (pc.MovePlayer(generatedLevel, ref constants))
+            {
+                StartCoroutine(DoAMove(pc));
+            }
         }
     }
 
-    void MoveCameraDown(PlayerController pc)
+    private bool isDoingMove = false;
+    IEnumerator DoAMove(PlayerController pc)
     {
-        Vector3 cameraPos = Camera.transform.position;
-        cameraPos.y -= constants.CelHeight;
-        Camera.transform.position = cameraPos;
+        isDoingMove = true;
 
-        // TODO: Make player fall down.
-        while (true)
-        { 
-            int x = pc.X;
-            int y = pc.Y + 1;
-            if (generatedLevel.CanMove(x, y))
+        // First lerp the player
+        {
+            Vector3 playerStartPos = pc.transform.position;
+            Vector3 playerEndPos = constants.GetObjectPosition(pc.transform, pc.X, pc.Y);
+            float time = 0;
+            while (time < MechanicParameters.PlayerMoveTime)
             {
-                pc.Y = y;
-                constants.SyncObjectPosition(pc.transform, pc.X, pc.Y);
-            }
-            else
-            {
-                break;
+                time += Time.deltaTime;
+                time = Mathf.Min(MechanicParameters.PlayerMoveTime, time);
+                pc.transform.position = Vector3.Lerp(playerStartPos, playerEndPos,
+                    MechanicParameters.PlayerMoveCurve.Evaluate(time / MechanicParameters.PlayerMoveTime)
+                    );
+                yield return null;
             }
         }
 
+        {
+            // Figure out how far the player can move
+            Vector3 playerStartPos = pc.transform.position;
+            bool playerFell = false;
+            while (true)
+            {
+                int x = pc.X;
+                int y = pc.Y + 1;
+                if (generatedLevel.CanMove(x, y))
+                {
+                    playerFell = true;
+                    pc.Y = y;
+                    //constants.SyncObjectPosition(pc.transform, pc.X, pc.Y);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            Vector3 playerEndPos = constants.GetObjectPosition(pc.transform, pc.X, pc.Y);
+
+            // Now move the camera (this might kill the player)
+            Vector3 cameraStartPos = Camera.transform.position;
+            Vector3 cameraEndPos = cameraStartPos;
+            cameraEndPos.y -= constants.CelHeight;
+            float time = 0;
+            while (time < MechanicParameters.LevelFallTime)
+            {
+                time += Time.deltaTime;
+                time = Mathf.Min(MechanicParameters.LevelFallTime, time);
+                Camera.transform.position = Vector3.Lerp(cameraStartPos, cameraEndPos,
+                    MechanicParameters.LevelFallCurve.Evaluate(time / MechanicParameters.LevelFallTime)
+                    );
+
+                // Right now we're moving the player in the same time, but we might just want to do the first move in that time, and then have them fall further if needed?
+                pc.transform.position = Vector3.Lerp(playerStartPos, playerEndPos,
+                    MechanicParameters.PlayerFallCurve.Evaluate(time / MechanicParameters.LevelFallTime)
+                    );
+
+                yield return null;
+            }
+        }
+
+        isDoingMove = false;
     }
 }

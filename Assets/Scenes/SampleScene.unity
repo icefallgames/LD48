@@ -527,6 +527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaaebd46f5df11e449f4dbd1f84c08b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MechanicParameters: {fileID: 11400000, guid: 474383a359addd841a9fb77199b2a7e3, type: 2}
   Camera: {fileID: 519420031}
   LevelParent: {fileID: 260547056}
   Levels:

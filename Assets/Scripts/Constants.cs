@@ -18,6 +18,13 @@ public struct Constants
         position.y -= CelHeight * y;
         tx.position = position;
     }
+    public Vector3 GetObjectPosition(Transform tx, int x, int y)
+    {
+        Vector2 position = TopLeft;
+        position.x += CelWidth * x;
+        position.y -= CelHeight * y;
+        return position;
+    }
 
     public const int WallPiece = 1;
     public const int SupportPiece = 2;

@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
                 moveSucceeded = true;
                 X = x;
                 Y = y;
-                constants.SyncObjectPosition(this.transform, X, Y);
+                // Don't sync him yet...
             }
             else
             {
