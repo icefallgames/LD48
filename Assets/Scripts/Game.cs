@@ -9,7 +9,7 @@ public class Game : MonoBehaviour
     public MechanicParameters MechanicParameters;
 
     public Camera Camera;
-    private int yCamera;
+    private LevelState levelState;
     public Transform LevelParent;
 
     public Level[] Levels;
@@ -24,6 +24,8 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        levelState = new LevelState();
+
         cameraRootPosition = Camera.transform.position;
 
         pixelPerfectCamera = Camera.GetComponent<PixelPerfectCamera>();
@@ -53,8 +55,11 @@ public class Game : MonoBehaviour
     void ManifestLevel(int index)
     {
         Camera.transform.position = cameraRootPosition;
-        yCamera = 0;
-        generatedLevel = GenerateLevel.Generate(ref constants, Levels[index], ref playerObject, Camera.transform);
+        levelState.Frames.Clear();
+        levelState.AddFrame();
+        levelState.Current.YCamera = 0;
+        generatedLevel = GenerateLevel.Generate(ref constants, Levels[index], ref playerObject, Camera.transform, levelState.Current);
+        levelState.SaveStates();
     }
 
     private GeneratedLevel generatedLevel;
@@ -103,64 +108,154 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isDoingMove && !isResetting)
+        if (!isResetting)
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
+                StopCoroutine(lerpCoroutine);
+                isLerpingMove = false;
                 StartCoroutine(Reset(false));
             }
             else
             {
                 PlayerController pc = playerObject.GetComponent<PlayerController>();
-                if (pc.MovePlayer(generatedLevel, ref constants))
+
+                if (pc.PressedMoveKey())
                 {
-                    StartCoroutine(DoAMove(pc));
+                    if (isLerpingMove)
+                    {
+                        StopCoroutine(lerpCoroutine);
+                        isLerpingMove = false;
+                        // Position the objects at their destinations immediately, so the player doesn't need to wait for the lerp to finish.
+                        PositionObjects(levelState.Current);
+
+                        if (CheckForDeath())
+                        {
+                            StartCoroutine(Reset(shouldDie: true));
+                        }
+                    }
+                }
+
+                if (!isResetting) // Because we may have killed the player ^^
+                {
+                    if (pc.MovePlayer(generatedLevel, ref constants))
+                    {
+                        ProcessMoveResultsImmediately(pc);
+                        lerpCoroutine = StartCoroutine(LerpToNewResults(pc));
+                    }
+                    else if (Input.GetKeyDown(KeyCode.X))
+                    {
+                        // Go back
+                        levelState.Pop();
+                        levelState.PushStates();
+                        PositionObjects(levelState.Current);
+                    }
                 }
             }
         }
     }
 
-    private bool isDoingMove = false;
-    IEnumerator DoAMove(PlayerController pc)
+    private Coroutine lerpCoroutine;
+
+    private bool CheckForDeath()
+    {
+        ObjectWithPosition objectWithPosition = playerObject.GetComponent<ObjectWithPosition>();
+        return (objectWithPosition.Y <= levelState.Current.YCamera);
+    }
+
+    // Ensures objects visual positions are sync'd with their state
+    private void PositionObjects(LevelStateFrame frame)
+    {
+        foreach (ObjectLevelState objectState in frame.Objects)
+        {
+            ObjectWithPosition pos = objectState.Object;
+            pos.transform.position = constants.GetObjectPosition(pos.transform, pos.X, pos.Y);
+        }
+        Vector3 cameraEndPos = cameraRootPosition + new Vector3(0, -frame.YCamera * constants.CelHeight, 0);
+        Camera.transform.position = cameraEndPos;
+    }
+
+    private void ProcessMoveResultsImmediately(PlayerController pc)
+    {
+        // Add a new state frame
+        levelState.AddFrame();
+        levelState.Current.YCamera++;
+
+        // Player falls, maybe
+        ObjectWithPosition playerPos = pc.GetComponent<ObjectWithPosition>();
+        while (true)
+        {
+            int x = playerPos.X;
+            int y = playerPos.Y + 1;
+            if (generatedLevel.CanMove(x, y))
+            {
+                playerPos.Y = y;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        levelState.SaveStates(); // Does that for the objects only, camera is already updated.
+    }
+
+    private List<Vector3> startLerpWorker = new List<Vector3>();
+    private List<Vector3> endLerpWorker = new List<Vector3>();
+
+    private bool isLerpingMove = false;
+    IEnumerator LerpToNewResults(PlayerController pc)
     {
         ObjectWithPosition playerPos = pc.GetComponent<ObjectWithPosition>();
 
-        isDoingMove = true;
+        isLerpingMove = true;
 
-        // First lerp the player
+        LevelStateFrame currentFrame = levelState.Current;
+
+        // First lerp the player and other objects to the left or right.
+        startLerpWorker.Clear();
+        endLerpWorker.Clear();
+        foreach (ObjectLevelState objectState in currentFrame.Objects)
         {
-            Vector3 playerStartPos = pc.transform.position;
-            Vector3 playerEndPos = constants.GetObjectPosition(pc.transform, playerPos.X, playerPos.Y);
+            startLerpWorker.Add(objectState.Object.transform.position);
+            endLerpWorker.Add(constants.GetObjectPositionX(objectState.Object.transform, objectState.Object.X));
+        }
+
+        {
             float time = 0;
             while (time < MechanicParameters.PlayerMoveTime)
             {
                 time += Time.deltaTime;
                 time = Mathf.Min(MechanicParameters.PlayerMoveTime, time);
-                pc.transform.position = Vector3.Lerp(playerStartPos, playerEndPos,
-                    MechanicParameters.PlayerMoveCurve.Evaluate(time / MechanicParameters.PlayerMoveTime)
-                    );
+
+                for (int i = 0; i < startLerpWorker.Count; i++)
+                {
+                    ObjectWithPosition objectWithPos = currentFrame.Objects[i].Object;
+                    objectWithPos.transform.position = Vector3.Lerp(startLerpWorker[i], endLerpWorker[i],
+                        MechanicParameters.PlayerMoveCurve.Evaluate(time / MechanicParameters.PlayerMoveTime)
+                        );
+                }
+
                 yield return null;
             }
         }
 
-        {
-            // Figure out how far the player can move - for now just one square
-            Vector3 playerStartPos = pc.transform.position;
-            bool playerFell = false;
-            int x = playerPos.X;
-            int y = playerPos.Y + 1;
-            if (generatedLevel.CanMove(x, y))
-            {
-                playerFell = true;
-                playerPos.Y = y;
-                //constants.SyncObjectPosition(pc.transform, pc.X, pc.Y);
-            }
-            Vector3 playerEndPos = constants.GetObjectPosition(pc.transform, playerPos.X, playerPos.Y);
 
+
+        // Now do the camera, and objects verticals
+        startLerpWorker.Clear();
+        endLerpWorker.Clear();
+        foreach (ObjectLevelState objectState in currentFrame.Objects)
+        {
+            startLerpWorker.Add(objectState.Object.transform.position);
+            endLerpWorker.Add(constants.GetObjectPositionY(objectState.Object.transform, objectState.Object.Y));
+        }
+
+
+        {
             // Now move the camera (this might kill the player)
             Vector3 cameraStartPos = Camera.transform.position;
-            yCamera++; // Our integer thing
-            Vector3 cameraEndPos = cameraRootPosition + new Vector3(0, - yCamera * constants.CelHeight, 0);
+            Vector3 cameraEndPos = cameraRootPosition + new Vector3(0, -currentFrame.YCamera * constants.CelHeight, 0);
             float time = 0;
             while (time < MechanicParameters.LevelFallTime)
             {
@@ -170,62 +265,24 @@ public class Game : MonoBehaviour
                     MechanicParameters.LevelFallCurve.Evaluate(time / MechanicParameters.LevelFallTime)
                     );
 
-                // Right now we're moving the player in the same time, but we might just want to do the first move in that time, and then have them fall further if needed?
-                pc.transform.position = Vector3.Lerp(playerStartPos, playerEndPos,
-                    MechanicParameters.LevelFallCurve.Evaluate(time / MechanicParameters.LevelFallTime)
-                    );
+                for (int i = 0; i < startLerpWorker.Count; i++)
+                {
+                    ObjectWithPosition objectWithPos = currentFrame.Objects[i].Object;
+                    objectWithPos.transform.position = Vector3.Lerp(startLerpWorker[i], endLerpWorker[i],
+                        MechanicParameters.PlayerMoveCurve.Evaluate(time / MechanicParameters.PlayerMoveTime)
+                        );
+                }
 
                 yield return null;
             }
 
-            //Debug.LogFormat("Camera {0}    Player: {1}", yCamera, pc.Y);
-
-            if (!playerFell)
-            {
-                // If they fell, there's currently no way they could die by ceiling
-                if (playerPos.Y <= yCamera)
-                {
-                    StartCoroutine(Reset(shouldDie: true));
-                }
-            }
         }
 
-
-
-        // Additional player falling
+        if (CheckForDeath())
         {
-            // Figure out how far the player can move
-            Vector3 playerStartPos = pc.transform.position;
-            while (true)
-            {
-                int x = playerPos.X;
-                int y = playerPos.Y + 1;
-                if (generatedLevel.CanMove(x, y))
-                {
-                    playerPos.Y = y;
-                    //constants.SyncObjectPosition(pc.transform, pc.X, pc.Y);
-                }
-                else
-                {
-                    break;
-                }
-            }
-            Vector3 playerEndPos = constants.GetObjectPosition(pc.transform, playerPos.X, playerPos.Y);
-
-            float time = 0;
-            while (time < MechanicParameters.LevelFallTime)
-            {
-                time += Time.deltaTime;
-
-                pc.transform.position = Vector3.Lerp(playerStartPos, playerEndPos,
-                    MechanicParameters.PlayerFallCurve.Evaluate(time / MechanicParameters.LevelFallTime)
-                    );
-
-                yield return null;
-            }
+            StartCoroutine(Reset(shouldDie: true));
         }
 
-
-        isDoingMove = false;
+        isLerpingMove = false;
     }
 }

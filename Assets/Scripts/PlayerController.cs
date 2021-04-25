@@ -12,6 +12,11 @@ public class PlayerController : MonoBehaviour
         pos = GetComponent<ObjectWithPosition>();
     }
 
+    public bool PressedMoveKey()
+    {
+        return Input.GetButtonDown("Horizontal") || Input.GetButtonDown("Vertical");
+    }
+
     // True if the player actually moved
     public bool MovePlayer(GeneratedLevel generatedLevel, ref Constants constants)
     {

@@ -5,8 +5,10 @@ using System.Text.RegularExpressions;
 
 public static class GenerateLevel
 {
-    public static GeneratedLevel Generate(ref Constants constants, Level level, ref GameObject playerObject, Transform fixedParent)
+    public static GeneratedLevel Generate(ref Constants constants, Level level, ref GameObject playerObject, Transform fixedParent, LevelStateFrame initialFrame)
     {
+        List<ObjectWithPosition> objectsWithPosition = new List<ObjectWithPosition>();
+
         // Make the ceiling (fixed to camera)
         Vector3 ceilingPiecePos = constants.TopLeft;
         ceilingPiecePos.z = -1f; // In front of stuff
@@ -48,6 +50,7 @@ public static class GenerateLevel
                         playerObject.transform.position = celPosition;
                     }
                     ObjectWithPosition pc = playerObject.GetComponent<ObjectWithPosition>();
+                    objectsWithPosition.Add(pc);
                     pc.X = column;
                     pc.Y = row;
                     break;
@@ -66,6 +69,13 @@ public static class GenerateLevel
                 celPosition.x += constants.CelWidth;
             }
         }
+
+        initialFrame.Objects = new ObjectLevelState[objectsWithPosition.Count];
+        for (int i = 0; i < objectsWithPosition.Count; i++)
+        {
+            initialFrame.Objects[i].Object = objectsWithPosition[i];
+        }
+
         return generatedLevel;
     }
 }

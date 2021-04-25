@@ -26,6 +26,21 @@ public struct Constants
         return position;
     }
 
+    public Vector3 GetObjectPositionX(Transform tx, int x)
+    {
+        Vector3 pos = tx.position;
+        pos.x = TopLeft.x + CelWidth * x;
+        return pos;
+    }
+
+    public Vector3 GetObjectPositionY(Transform tx, int y)
+    {
+        Vector3 pos = tx.position;
+        pos.y = TopLeft.y - CelHeight * y;
+        return pos;
+    }
+
+
     public const int WallPiece = 1;
     public const int SupportPiece = 2;
     public const int PlayerPiece = 3;
