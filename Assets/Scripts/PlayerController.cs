@@ -5,17 +5,18 @@ using UnityEngine;
 // This does go on player
 public class PlayerController : MonoBehaviour
 {
-    // These can be out of bounds, I guess.
-    [System.NonSerialized]
-    public int X;
-    [System.NonSerialized]
-    public int Y;
+    private ObjectWithPosition pos;
+
+    private void Awake()
+    {
+        pos = GetComponent<ObjectWithPosition>();
+    }
 
     // True if the player actually moved
     public bool MovePlayer(GeneratedLevel generatedLevel, ref Constants constants)
     {
-        int x = X;
-        int y = Y;
+        int x = pos.X;
+        int y = pos.Y;
         bool triedMove = false;
         bool moveSucceeded = false;
         if (Input.GetButtonDown("Horizontal"))
@@ -37,8 +38,8 @@ public class PlayerController : MonoBehaviour
             if (generatedLevel.CanMove(x, y))
             {
                 moveSucceeded = true;
-                X = x;
-                Y = y;
+                pos.X = x;
+                pos.Y = y;
                 // Don't sync him yet...
             }
             else

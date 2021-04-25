@@ -47,7 +47,7 @@ public static class GenerateLevel
                     {
                         playerObject.transform.position = celPosition;
                     }
-                    PlayerController pc = playerObject.GetComponent<PlayerController>();
+                    ObjectWithPosition pc = playerObject.GetComponent<ObjectWithPosition>();
                     pc.X = column;
                     pc.Y = row;
                     break;

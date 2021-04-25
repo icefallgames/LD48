@@ -123,12 +123,14 @@ public class Game : MonoBehaviour
     private bool isDoingMove = false;
     IEnumerator DoAMove(PlayerController pc)
     {
+        ObjectWithPosition playerPos = pc.GetComponent<ObjectWithPosition>();
+
         isDoingMove = true;
 
         // First lerp the player
         {
             Vector3 playerStartPos = pc.transform.position;
-            Vector3 playerEndPos = constants.GetObjectPosition(pc.transform, pc.X, pc.Y);
+            Vector3 playerEndPos = constants.GetObjectPosition(pc.transform, playerPos.X, playerPos.Y);
             float time = 0;
             while (time < MechanicParameters.PlayerMoveTime)
             {
@@ -142,25 +144,18 @@ public class Game : MonoBehaviour
         }
 
         {
-            // Figure out how far the player can move
+            // Figure out how far the player can move - for now just one square
             Vector3 playerStartPos = pc.transform.position;
             bool playerFell = false;
-            while (true)
+            int x = playerPos.X;
+            int y = playerPos.Y + 1;
+            if (generatedLevel.CanMove(x, y))
             {
-                int x = pc.X;
-                int y = pc.Y + 1;
-                if (generatedLevel.CanMove(x, y))
-                {
-                    playerFell = true;
-                    pc.Y = y;
-                    //constants.SyncObjectPosition(pc.transform, pc.X, pc.Y);
-                }
-                else
-                {
-                    break;
-                }
+                playerFell = true;
+                playerPos.Y = y;
+                //constants.SyncObjectPosition(pc.transform, pc.X, pc.Y);
             }
-            Vector3 playerEndPos = constants.GetObjectPosition(pc.transform, pc.X, pc.Y);
+            Vector3 playerEndPos = constants.GetObjectPosition(pc.transform, playerPos.X, playerPos.Y);
 
             // Now move the camera (this might kill the player)
             Vector3 cameraStartPos = Camera.transform.position;
@@ -177,7 +172,7 @@ public class Game : MonoBehaviour
 
                 // Right now we're moving the player in the same time, but we might just want to do the first move in that time, and then have them fall further if needed?
                 pc.transform.position = Vector3.Lerp(playerStartPos, playerEndPos,
-                    MechanicParameters.PlayerFallCurve.Evaluate(time / MechanicParameters.LevelFallTime)
+                    MechanicParameters.LevelFallCurve.Evaluate(time / MechanicParameters.LevelFallTime)
                     );
 
                 yield return null;
@@ -188,12 +183,48 @@ public class Game : MonoBehaviour
             if (!playerFell)
             {
                 // If they fell, there's currently no way they could die by ceiling
-                if (pc.Y <= yCamera)
+                if (playerPos.Y <= yCamera)
                 {
                     StartCoroutine(Reset(shouldDie: true));
                 }
             }
         }
+
+
+
+        // Additional player falling
+        {
+            // Figure out how far the player can move
+            Vector3 playerStartPos = pc.transform.position;
+            while (true)
+            {
+                int x = playerPos.X;
+                int y = playerPos.Y + 1;
+                if (generatedLevel.CanMove(x, y))
+                {
+                    playerPos.Y = y;
+                    //constants.SyncObjectPosition(pc.transform, pc.X, pc.Y);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            Vector3 playerEndPos = constants.GetObjectPosition(pc.transform, playerPos.X, playerPos.Y);
+
+            float time = 0;
+            while (time < MechanicParameters.LevelFallTime)
+            {
+                time += Time.deltaTime;
+
+                pc.transform.position = Vector3.Lerp(playerStartPos, playerEndPos,
+                    MechanicParameters.PlayerFallCurve.Evaluate(time / MechanicParameters.LevelFallTime)
+                    );
+
+                yield return null;
+            }
+        }
+
 
         isDoingMove = false;
     }
