@@ -11,6 +11,10 @@ GameObject:
   - component: {fileID: 3056469456349167458}
   - component: {fileID: 3056469456349167459}
   - component: {fileID: 3312677071132888568}
+  - component: {fileID: 6954319652616655547}
+  - component: {fileID: 2555826916922658798}
+  - component: {fileID: 8476882486166262064}
+  - component: {fileID: 5562812352387150072}
   m_Layer: 0
   m_Name: DraggableSupport
   m_TagString: Untagged
@@ -95,3 +99,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29e8cc2c31540a844996bdee27ec53de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6954319652616655547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3056469456349167456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c570c2422a4df146a315f755b7241f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2555826916922658798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3056469456349167456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9527624b5d2cc3e4095af4e7747c44f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8476882486166262064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3056469456349167456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10d6b50a8630a824aa7ad8dbadcfef3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5562812352387150072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3056469456349167456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fdb9a65030a0ab46b586a937bb8dfd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Sprites:
+  - {fileID: -6823004828362728393, guid: d1cc826eb2dd1a84d8a258bc3a58439c, type: 3}
+  - {fileID: -6209139068123054601, guid: d1cc826eb2dd1a84d8a258bc3a58439c, type: 3}
+  - {fileID: 513011000037657861, guid: d1cc826eb2dd1a84d8a258bc3a58439c, type: 3}
+  - {fileID: 0}

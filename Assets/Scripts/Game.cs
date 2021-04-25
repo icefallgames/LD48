@@ -202,13 +202,45 @@ public class Game : MonoBehaviour
         Camera.transform.position = cameraEndPos;
     }
 
+    private void DescendCamera(LevelStateFrame frame)
+    {
+        // TODO: check if any are hitting supports.
+        bool shouldBlock = false;
+        foreach (ObjectLevelState objectState in frame.Objects)
+        {
+            DraggableSupport draggableSupport = objectState.Object.GetComponent<DraggableSupport>();
+            if (draggableSupport)
+            {
+                if (draggableSupport.ShouldBlockCameraMovementAndDegrade(generatedLevel))
+                {
+                    shouldBlock = true; // Keep evaluating even if should block is already trye.
+                }
+            }
+        }
+
+        if (!shouldBlock)
+        {
+            foreach (ObjectLevelState objectState in frame.Objects)
+            {
+                if (objectState.Object.GetComponent<FixedToCamera>())
+                {
+                    objectState.Object.Y++; // We'll save states later.
+                }
+            }
+
+            frame.YCamera++;
+        }
+    }
+
     private MoveResult ProcessMoveResultsImmediately(PlayerController pc)
     {
         MoveResult result = MoveResult.None;
 
         // Add a new state frame
         levelState.AddFrame();
-        levelState.Current.YCamera++;
+
+        // Can we descend the camera?
+        DescendCamera(levelState.Current);
 
         // Player falls, maybe
         ObjectWithPosition playerPos = pc.GetComponent<ObjectWithPosition>();
