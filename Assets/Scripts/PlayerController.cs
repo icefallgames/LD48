@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetButtonDown("Vertical"))
         {
             y += (Input.GetAxisRaw("Vertical") > 0) ? -1 : 1;
+            x += pos.Direction; // testog
             triedMove = true;
         }
 
@@ -40,13 +41,24 @@ public class PlayerController : MonoBehaviour
             if (MoveHelper.CanMove_AndMaybePush(pos, x - pos.X, y - pos.Y, generatedLevel, objects, moveWorker))
             {
                 moveSucceeded = true;
-                pos.X = x;
-                pos.Y = y;
-                // Don't sync him yet...
             }
             else
             {
-                // Error beep
+                if ((x != pos.X) && (y != pos.Y)) // We failed a diagonal jump. Try just straight up.
+                {
+                    x = pos.X;
+                    if (MoveHelper.CanMove_AndMaybePush(pos, x - pos.X, y - pos.Y, generatedLevel, objects, moveWorker))
+                    {
+                        moveSucceeded = true;
+                    }
+                }
+            }
+
+            if (moveSucceeded)
+            {
+                pos.Direction = x - pos.X; // Set a left/right direction!
+                pos.X = x;
+                pos.Y = y;
             }
         }
         return moveSucceeded;

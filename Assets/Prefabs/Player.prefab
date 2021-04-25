@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 3056469456349167459}
   - component: {fileID: -3027207315184833777}
   - component: {fileID: -5595006066624916065}
+  - component: {fileID: -269786418560672306}
+  - component: {fileID: 4995934890550397070}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -110,3 +112,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CollisionLayer: -1
   FixedMovement: 1
+  EvaluationOrder: 0
+--- !u!114 &-269786418560672306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3056469456349167456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d11ceca780d964494c3b1a1c812eee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Direction: 1
+--- !u!114 &4995934890550397070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3056469456349167456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f24118d79cc5e04088e52890cc73646, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Left: {fileID: -6287787046888575383, guid: 965becba221fc2c41a8530d218cdaf5a, type: 3}
+  Center: {fileID: -2311659948842064771, guid: 965becba221fc2c41a8530d218cdaf5a, type: 3}
+  Right: {fileID: 7364682651488144517, guid: 965becba221fc2c41a8530d218cdaf5a, type: 3}

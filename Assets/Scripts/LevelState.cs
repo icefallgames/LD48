@@ -9,6 +9,7 @@ public struct ObjectLevelState
     public int X;
     public int Y;
     public int Data;
+    public int Direction;
 }
 
 public class LevelStateFrame
@@ -77,6 +78,7 @@ public class LevelState
             current.Objects[i].X = pos.X;
             current.Objects[i].Y = pos.Y;
             current.Objects[i].Data = pos.Data;
+            current.Objects[i].Direction = pos.Direction;
         }
     }
 
@@ -90,6 +92,7 @@ public class LevelState
             pos.X = current.Objects[i].X;
             pos.Y = current.Objects[i].Y;
             pos.Data = current.Objects[i].Data;
+            pos.Direction = current.Objects[i].Direction;
         }
     }
 

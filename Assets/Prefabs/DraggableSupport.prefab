@@ -101,6 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CollisionLayer: -1
   FixedMovement: 1
+  EvaluationOrder: 2
 --- !u!114 &6954319652616655547
 MonoBehaviour:
   m_ObjectHideFlags: 0

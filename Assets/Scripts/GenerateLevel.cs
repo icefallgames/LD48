@@ -124,7 +124,11 @@ public static class GenerateLevel
             }
         }
 
-        // TODO Sort these first?
+        // Sort
+        objectsWithPosition.Sort(
+            (a, b) => a.EvaluationOrder.CompareTo(b.EvaluationOrder)
+            );
+
         initialFrame.Objects = new ObjectLevelState[objectsWithPosition.Count];
         for (int i = 0; i < objectsWithPosition.Count; i++)
         {

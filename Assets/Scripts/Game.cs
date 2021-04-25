@@ -246,6 +246,7 @@ public class Game : MonoBehaviour
         }
     }
 
+    // Handles falling.
     private MoveResult ProcessMoveResultsImmediately(PlayerController pc)
     {
         MoveResult result = MoveResult.None;
@@ -257,43 +258,59 @@ public class Game : MonoBehaviour
         DescendCamera(levelState.Current);
 
         // Player falls, maybe - unless they hit water?
-        ObjectWithPosition playerPos = pc.GetComponent<ObjectWithPosition>();
-        while (true)
+        // This is a bit tricky, because we also need to push things down.
+        ObjectWithPosition thePlayer = pc.GetComponent<ObjectWithPosition>();
+        bool somethingMoved = true;
+        bool bail = false;
+
+        foreach (ObjectWithPosition pos in levelState.Objects)
         {
-            // If they're in water, break
-            if (generatedLevel.IsWater(playerPos.X, playerPos.Y))
-            {
-                break;
-            }
-
-            int x = playerPos.X;
-            int y = playerPos.Y + 1;
-            //if (generatedLevel.IsBlocked(x, y))
-            ClearMoveWorker();
-            if (MoveHelper.CanMove_AndMaybePush(playerPos, 0, 1, generatedLevel, levelState.Objects, moveWorker))
-            {
-                playerPos.Y = y;
-                if (GetBottomDeathRow() == playerPos.Y)
-                {
-                    result = MoveResult.Death;
-                    break; // They're gonna die.
-                }
-
-                if (Constants.Exit == generatedLevel.GetWorldPieceAt(playerPos.X, playerPos.Y))
-                {
-                    result = MoveResult.Exit;
-                    break;
-                }
-            }
-            else
-            {
-                break;
-            }
+            // Store the transitionary states so we can do nice lerping.
+            pos.XIntermediate = pos.X;
+            pos.YIntermediate = pos.Y;
         }
 
-        if (playerPos.Y <= levelState.Current.YCamera)
+        while (somethingMoved && !bail)
         {
-            result = MoveResult.Death;
+            somethingMoved = false;
+            ClearMoveWorker();
+
+            for (int i = 0; i < levelState.Objects.Count; i++)
+            {
+                ObjectWithPosition pos = levelState.Objects[i];
+
+                Gravity gravity = pos.GetComponent<Gravity>();
+                int direction = gravity ? gravity.Direction : 0;
+                if ((!generatedLevel.IsWater(pos.X, pos.Y)) && direction != 0) // Things float in water.
+                {
+                    int x = pos.X;
+                    int y = pos.Y + direction;
+                    //if (generatedLevel.IsBlocked(x, y))
+                    if (MoveHelper.CanMove_AndMaybePush(pos, 0, 1, generatedLevel, levelState.Objects, moveWorker))
+                    {
+                        pos.Y = y;
+                        somethingMoved = true;
+                    }
+                }
+
+                if (thePlayer == pos)
+                {
+                    if ((GetBottomDeathRow() == pos.Y) || (pos.Y <= levelState.Current.YCamera))
+                    {
+                        result = MoveResult.Death;
+                        bail = true;
+                        break; // They're gonna die.
+                    }
+
+                    if (Constants.Exit == generatedLevel.GetWorldPieceAt(pos.X, pos.Y))
+                    {
+                        result = MoveResult.Exit;
+                        bail = true;
+                        break;
+                    }
+                }
+
+            }
         }
 
         levelState.SaveStates(); // Does that for the objects only, camera is already updated.
@@ -319,7 +336,8 @@ public class Game : MonoBehaviour
         foreach (ObjectLevelState objectState in currentFrame.Objects)
         {
             startLerpWorker.Add(objectState.Object.transform.position);
-            endLerpWorker.Add(constants.GetObjectPositionX(objectState.Object.transform, objectState.Object.X));
+            //endLerpWorker.Add(constants.GetObjectPositionX(objectState.Object.transform, objectState.Object.X));
+            endLerpWorker.Add(constants.GetObjectPosition(objectState.Object.transform, objectState.Object.XIntermediate, objectState.Object.YIntermediate));
         }
 
         {
