@@ -18,8 +18,9 @@ public class PlayerController : MonoBehaviour
     }
 
     // True if the player actually moved
-    public bool MovePlayer(GeneratedLevel generatedLevel, ref Constants constants, List<ObjectWithPosition> objects, bool[] moveWorker)
+    public bool MovePlayer(GeneratedLevel generatedLevel, ref Constants constants, List<ObjectWithPosition> objects, bool[] moveWorker, out bool wasJump)
     {
+        wasJump = false;
         int x = pos.X;
         int y = pos.Y;
         bool triedMove = false;
@@ -35,6 +36,7 @@ public class PlayerController : MonoBehaviour
             y += upDown;
             if (upDown < 0) // Direction only when going up? Actually let's make water reset direction
             {
+                wasJump = true;
                 x += pos.Direction; 
             }
             triedMove = true;
@@ -44,6 +46,7 @@ public class PlayerController : MonoBehaviour
             y -= 1;
             x += pos.Direction;
             triedMove = true;
+            wasJump = true;
         }
 
         if (triedMove)

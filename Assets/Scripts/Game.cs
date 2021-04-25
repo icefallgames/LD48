@@ -22,6 +22,12 @@ public class Game : MonoBehaviour
     public Level[] Levels;
     public GameObject Title;
 
+    public RandomSound WalkSound;
+    public RandomSound DeathSound;
+    public RandomSound JumpSound;
+    public RandomSound FallSound;
+    public RandomSound RockBreak;
+
     public GameObject DeathParticles;
 
     private Constants constants;
@@ -101,6 +107,7 @@ public class Game : MonoBehaviour
 
         if (shouldDie)
         {
+            DeathSound.Play();
             // Blood
             GameObject deathParticles = GameObject.Instantiate(DeathParticles, playerObject.transform.position + new Vector3(0, 0, -2), Quaternion.identity, LevelParent);
             float time = 0;
@@ -200,8 +207,18 @@ public class Game : MonoBehaviour
                 if (!isResetting) // Because we may have killed the player ^^
                 {
                     ClearMoveWorker();
-                    if (pc.MovePlayer(generatedLevel, ref constants, levelState.Objects, moveWorker))
+                    bool wasJump;
+                    if (pc.MovePlayer(generatedLevel, ref constants, levelState.Objects, moveWorker, out wasJump))
                     {
+                        if (wasJump)
+                        {
+                            JumpSound.Play(forceNew: true);
+                        }
+                        else
+                        {
+                            WalkSound.Play();
+                        }
+
                         Title.SetActive(false);
 
                         //Debug.Log("player at: " + levelState.Current.YCamera);
@@ -304,6 +321,11 @@ public class Game : MonoBehaviour
 
             frame.YCamera++;
         }
+        else
+        {
+            // Blocked!
+            RockBreak.Play(true);
+        }
     }
 
     // Handles falling.
@@ -330,6 +352,7 @@ public class Game : MonoBehaviour
             pos.YIntermediate = pos.Y;
         }
 
+        int fallAmount = 0;
         while (somethingMoved && !bail)
         {
             somethingMoved = false;
@@ -372,6 +395,15 @@ public class Game : MonoBehaviour
                         result = MoveResult.Exit;
                         bail = true;
                         break;
+                    }
+
+                    if (somethingMoved)
+                    {
+                        fallAmount++;
+                        if (fallAmount > 3)
+                        {
+                            FallSound.Play();
+                        }
                     }
                 }
 
