@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
             x += (Input.GetAxisRaw("Horizontal") < 0) ? -1 : 1;
             triedMove = true;
         }
-        else if (Input.GetButton("Vertical"))
+        else if (Input.GetButtonDown("Vertical"))
         {
             if (Input.GetAxisRaw("Vertical") > 0) // Basically it's a jump
             {
