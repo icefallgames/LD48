@@ -7,7 +7,9 @@ public class GeneratedLevel
     public Level Level;
     public int Width;
     public int Height;
+    public int CameraHeight;
     public int[] Pieces;
+    public int[] CameraPieces; // This is actually where we should but the stalactites!
     public int[] Water;
 
     public bool IsWater(int x, int y)
@@ -19,7 +21,7 @@ public class GeneratedLevel
         return false;
     }
 
-    public int GetPieceAt(int x, int y)
+    public int GetWorldPieceAt(int x, int y)
     {
         if (x >= 0 && x < Width && y >= 0 && y < Height)
         {
@@ -28,7 +30,18 @@ public class GeneratedLevel
         return 0;
     }
 
-    public bool CanMove(int x, int y)
+    public int GetCameraPieceAt(int x, int y, int yCamera)
+    {
+        y -= yCamera;
+        if (x >= 0 && x < Width && y >= 0 && y < CameraHeight)
+        {
+            return CameraPieces[y * Width + x];
+        }
+        return 0;
+    }
+
+    // TODO: Expand this with collision flags, etc...
+    public bool IsUnblocked(int x, int y)
     {
         if (x >= 0 && x < Width && y >= 0 && y < Height)
         {

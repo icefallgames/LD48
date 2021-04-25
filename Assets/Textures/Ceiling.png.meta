@@ -23,6 +23,18 @@ TextureImporter:
   - first:
       213: 513011000037657861
     second: Ceiling_4
+  - first:
+      213: -321117286646895960
+    second: Ceiling_2
+  - first:
+      213: 3085205214103919247
+    second: Ceiling_3
+  - first:
+      213: -1414129984701836757
+    second: Ceiling_4
+  - first:
+      213: 1193578835568474344
+    second: Ceiling_5
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -176,8 +188,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 73c1aa82241df41a0800000000000000
-      internalID: -6823004828362728393
+      spriteID: 8aaac2677892b8bf0800000000000000
+      internalID: -321117286646895960
       vertices: []
       indices: 
       edges: []
@@ -197,8 +209,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7fd768b3ae4b4d9a0800000000000000
-      internalID: -6209139068123054601
+      spriteID: f8ad8ddcbc9d0da20800000000000000
+      internalID: 3085205214103919247
       vertices: []
       indices: 
       edges: []
@@ -218,8 +230,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 50dcc1759c49e1700800000000000000
-      internalID: 513011000037657861
+      spriteID: b225e937540006ce0800000000000000
+      internalID: -1414129984701836757
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ceiling_5
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8e8bb7980a1709010800000000000000
+      internalID: 1193578835568474344
       vertices: []
       indices: 
       edges: []

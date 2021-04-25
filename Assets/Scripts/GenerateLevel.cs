@@ -5,10 +5,8 @@ using System.Text.RegularExpressions;
 
 public static class GenerateLevel
 {
-    public static GeneratedLevel Generate(ref Constants constants, Level level, ref GameObject playerObject, Transform fixedParent, LevelStateFrame initialFrame)
+    public static GeneratedLevel Generate(ref Constants constants, Level level, ref GameObject playerObject, Transform fixedParent, LevelStateFrame initialFrame, List<ObjectWithPosition> objectsWithPosition)
     {
-        List<ObjectWithPosition> objectsWithPosition = new List<ObjectWithPosition>();
-
         // Make the ceiling (fixed to camera)
         Vector3 ceilingPiecePos = constants.TopLeft;
         Vector3 floorPiecePos = constants.TopLeft;
@@ -91,6 +89,12 @@ public static class GenerateLevel
                         createdObject = GameObject.Instantiate(level.LevelConstants.DraggableSupport, celPosition, Quaternion.identity, constants.Parent);
                     }
                     break;
+
+                case Constants.Crate:
+                    {
+                        createdObject = GameObject.Instantiate(level.LevelConstants.Crate, celPosition, Quaternion.identity, constants.Parent);
+                    }
+                    break;
             }
 
             if (generatedLevel.Water[i] != 0)
@@ -120,6 +124,7 @@ public static class GenerateLevel
             }
         }
 
+        // TODO Sort these first?
         initialFrame.Objects = new ObjectLevelState[objectsWithPosition.Count];
         for (int i = 0; i < objectsWithPosition.Count; i++)
         {

@@ -99,6 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29e8cc2c31540a844996bdee27ec53de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CollisionLayer: -1
+  FixedMovement: 1
 --- !u!114 &6954319652616655547
 MonoBehaviour:
   m_ObjectHideFlags: 0

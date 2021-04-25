@@ -13,4 +13,5 @@ public struct LevelConstants
     public GameObject WallSupport;
     public GameObject DraggableSupport;
     public GameObject Water;
+    public GameObject Crate;
 }

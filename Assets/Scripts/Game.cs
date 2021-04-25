@@ -62,10 +62,10 @@ public class Game : MonoBehaviour
     void ManifestLevel(int index)
     {
         Camera.transform.position = cameraRootPosition;
-        levelState.Frames.Clear();
+        levelState.Clear();
         levelState.AddFrame();
         levelState.Current.YCamera = 0;
-        generatedLevel = GenerateLevel.Generate(ref constants, Levels[index], ref playerObject, Camera.transform, levelState.Current);
+        generatedLevel = GenerateLevel.Generate(ref constants, Levels[index], ref playerObject, Camera.transform, levelState.Current, levelState.Objects);
         levelState.SaveStates();
         lastMoveResult = MoveResult.None;
     }
@@ -127,6 +127,19 @@ public class Game : MonoBehaviour
         ManifestLevel(currentLevel);
     }
 
+    bool[] moveWorker;
+    void ClearMoveWorker()
+    {
+        if (moveWorker == null || levelState.Objects.Count != moveWorker.Length)
+        {
+            moveWorker = new bool[levelState.Objects.Count];
+        }
+        for (int i = 0; i < moveWorker.Length; i++)
+        {
+            moveWorker[i] = false;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -156,7 +169,8 @@ public class Game : MonoBehaviour
 
                 if (!isResetting) // Because we may have killed the player ^^
                 {
-                    if (pc.MovePlayer(generatedLevel, ref constants))
+                    ClearMoveWorker();
+                    if (pc.MovePlayer(generatedLevel, ref constants, levelState.Objects, moveWorker))
                     {
                         lastMoveResult = ProcessMoveResultsImmediately(pc);
                         lerpCoroutine = StartCoroutine(LerpToNewResults(pc, lastMoveResult));
@@ -254,7 +268,9 @@ public class Game : MonoBehaviour
 
             int x = playerPos.X;
             int y = playerPos.Y + 1;
-            if (generatedLevel.CanMove(x, y))
+            //if (generatedLevel.IsBlocked(x, y))
+            ClearMoveWorker();
+            if (MoveHelper.CanMove_AndMaybePush(playerPos, 0, 1, generatedLevel, levelState.Objects, moveWorker))
             {
                 playerPos.Y = y;
                 if (GetBottomDeathRow() == playerPos.Y)
@@ -263,7 +279,7 @@ public class Game : MonoBehaviour
                     break; // They're gonna die.
                 }
 
-                if (Constants.Exit == generatedLevel.GetPieceAt(playerPos.X, playerPos.Y))
+                if (Constants.Exit == generatedLevel.GetWorldPieceAt(playerPos.X, playerPos.Y))
                 {
                     result = MoveResult.Exit;
                     break;

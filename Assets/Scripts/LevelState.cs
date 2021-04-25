@@ -32,6 +32,13 @@ public class LevelState
     public LevelState()
     {
         Frames = new List<LevelStateFrame>();
+        Objects = new List<ObjectWithPosition>();
+    }
+
+    public void Clear()
+    {
+        Frames.Clear();
+        Objects.Clear();
     }
 
     public void Pop()
@@ -87,4 +94,5 @@ public class LevelState
     }
 
     public List<LevelStateFrame> Frames;
+    public List<ObjectWithPosition> Objects;
 }

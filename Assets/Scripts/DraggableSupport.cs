@@ -21,7 +21,7 @@ public class DraggableSupport : MonoBehaviour
             int x = pos.X;
             int yBelow = pos.Y + 1; // below us
 
-            if (level.GetPieceAt(x, yBelow) == Constants.SupportPiece)
+            if (level.GetWorldPieceAt(x, yBelow) == Constants.SupportPiece)
             {
                 // Yup, we're blocked
                 pos.Data++; // Degrade

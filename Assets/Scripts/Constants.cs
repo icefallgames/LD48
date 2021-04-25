@@ -46,8 +46,11 @@ public struct Constants
     public const int PlayerPiece = 3;
     public const int Exit = 4;
     public const int DraggableSupport = 5;
+    public const int Water = 6;
+    public const int Crate = 7;
 
     public const string WaterLayer = "Water";
     public const string BackgroundLayer = "Background";
     public const string ObjectsLayer = "Objects";
+    public const string CameraLayer = "Camera";
 }

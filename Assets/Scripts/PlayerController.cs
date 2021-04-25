@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // True if the player actually moved
-    public bool MovePlayer(GeneratedLevel generatedLevel, ref Constants constants)
+    public bool MovePlayer(GeneratedLevel generatedLevel, ref Constants constants, List<ObjectWithPosition> objects, bool[] moveWorker)
     {
         int x = pos.X;
         int y = pos.Y;
@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
 
         if (triedMove)
         {
-            if (generatedLevel.CanMove(x, y))
+            if (MoveHelper.CanMove_AndMaybePush(pos, x - pos.X, y - pos.Y, generatedLevel, objects, moveWorker))
             {
                 moveSucceeded = true;
                 pos.X = x;

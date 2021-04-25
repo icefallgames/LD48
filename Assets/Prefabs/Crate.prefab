@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3056469456349167458}
   - component: {fileID: 3056469456349167459}
-  - component: {fileID: -3027207315184833777}
-  - component: {fileID: -5595006066624916065}
+  - component: {fileID: 3312677071132888568}
+  - component: {fileID: 6954319652616655547}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Crate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2311659948842064771, guid: 965becba221fc2c41a8530d218cdaf5a,
+  m_Sprite: {fileID: 1193578835568474344, guid: d1cc826eb2dd1a84d8a258bc3a58439c,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -84,19 +84,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-3027207315184833777
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3056469456349167456}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 087a4862b283e86439643880b8f37856, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &-5595006066624916065
+--- !u!114 &3312677071132888568
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -109,4 +97,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CollisionLayer: -1
-  FixedMovement: 1
+  FixedMovement: 0
+--- !u!114 &6954319652616655547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3056469456349167456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c570c2422a4df146a315f755b7241f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
