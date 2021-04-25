@@ -20,6 +20,7 @@ public class Game : MonoBehaviour
     public Transform LevelParent;
     public Tutorial Tutorial;
     public Level[] Levels;
+    public GameObject Title;
 
     public GameObject DeathParticles;
 
@@ -201,8 +202,9 @@ public class Game : MonoBehaviour
                     ClearMoveWorker();
                     if (pc.MovePlayer(generatedLevel, ref constants, levelState.Objects, moveWorker))
                     {
+                        Title.SetActive(false);
 
-                        Debug.Log("player at: " + levelState.Current.YCamera);
+                        //Debug.Log("player at: " + levelState.Current.YCamera);
 
                         lastMoveResult = ProcessMoveResultsImmediately(pc);
                         lerpCoroutine = StartCoroutine(LerpToNewResults(pc, lastMoveResult));
