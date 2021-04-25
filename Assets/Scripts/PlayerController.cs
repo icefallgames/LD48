@@ -70,6 +70,17 @@ public class PlayerController : MonoBehaviour
                 pos.X = x;
                 pos.Y = y;
             }
+            else
+            {
+                // If you didn't succeed in moving, but you tried to go left/right, change your direction and count as a move
+                int direction = x - pos.X;
+                if (direction != 0)
+                {
+                    pos.Direction = direction;
+                    // ACTUALLY NO... for the second create puzzle this is needed.
+                    //moveSucceeded = true;
+                }
+            }
         }
         return moveSucceeded;
     }
