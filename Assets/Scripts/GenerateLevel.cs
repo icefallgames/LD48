@@ -30,19 +30,28 @@ public static class GenerateLevel
 
         JsonLevel jsonLevel = JsonLevel.CreateFromJSON(level.Data.text);
 
+        int[] backgroundData = jsonLevel.GetLayerData(Constants.BackgroundLayer);
+        int[] objectsLayer = jsonLevel.GetLayerData(Constants.ObjectsLayer);
+        int[] waterLayer = jsonLevel.GetLayerData(Constants.WaterLayer);
+
         string data = level.Data.text;
 
         Vector2 celPosition = constants.TopLeft;
         generatedLevel.Height = jsonLevel.height;
         generatedLevel.Width = jsonLevel.width;
-        generatedLevel.Pieces = jsonLevel.layers[0].data;
+        generatedLevel.Pieces = backgroundData;
+        generatedLevel.Water = waterLayer;
+        if (waterLayer == null)
+        {
+            generatedLevel.Water = new int[generatedLevel.Pieces.Length];
+        }
         int row = 0;
         int column = 0;
         celPosition.x = constants.TopLeft.x;
-        int celCount = jsonLevel.layers[0].data.Length;
+        int celCount = backgroundData.Length;
         for (int i = 0; i < celCount; i++)
         {
-            int tile = jsonLevel.layers[0].data[i];
+            int tile = backgroundData[i];
             switch (tile)
             {
                 case Constants.WallPiece:
@@ -59,7 +68,7 @@ public static class GenerateLevel
 
             }
 
-            int maybeObject = jsonLevel.layers[1].data[i];
+            int maybeObject = objectsLayer[i];
             GameObject createdObject = null;
             switch (maybeObject)
             {
@@ -83,6 +92,12 @@ public static class GenerateLevel
                     }
                     break;
             }
+
+            if (generatedLevel.Water[i] != 0)
+            {
+                GameObject.Instantiate(level.LevelConstants.Water, celPosition, Quaternion.identity, constants.Parent);
+            }
+
             if (createdObject)
             {
                 ObjectWithPosition pc = createdObject.GetComponent<ObjectWithPosition>();

@@ -6,6 +6,7 @@ using UnityEngine;
 public class JsonLevelLayer
 {
     public int[] data;
+    public string name;
 }
 
 [System.Serializable]
@@ -20,5 +21,17 @@ public class JsonLevel
     public static JsonLevel CreateFromJSON(string jsonString)
     {
         return JsonUtility.FromJson<JsonLevel>(jsonString);
+    }
+
+    public int[] GetLayerData(string layerName)
+    {
+        for (int i = 0; i < layers.Length; i++)
+        {
+            if (layers[i].name == layerName)
+            {
+                return layers[i].data;
+            }
+        }
+        return null;
     }
 }

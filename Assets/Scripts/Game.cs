@@ -242,10 +242,16 @@ public class Game : MonoBehaviour
         // Can we descend the camera?
         DescendCamera(levelState.Current);
 
-        // Player falls, maybe
+        // Player falls, maybe - unless they hit water?
         ObjectWithPosition playerPos = pc.GetComponent<ObjectWithPosition>();
         while (true)
         {
+            // If they're in water, break
+            if (generatedLevel.IsWater(playerPos.X, playerPos.Y))
+            {
+                break;
+            }
+
             int x = playerPos.X;
             int y = playerPos.Y + 1;
             if (generatedLevel.CanMove(x, y))

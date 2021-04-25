@@ -8,6 +8,16 @@ public class GeneratedLevel
     public int Width;
     public int Height;
     public int[] Pieces;
+    public int[] Water;
+
+    public bool IsWater(int x, int y)
+    {
+        if (x >= 0 && x < Width && y >= 0 && y < Height)
+        {
+            return Water[y * Width + x] != 0;
+        }
+        return false;
+    }
 
     public int GetPieceAt(int x, int y)
     {
