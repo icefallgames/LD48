@@ -31,8 +31,12 @@ public class PlayerController : MonoBehaviour
         }
         else if (Input.GetButtonDown("Vertical"))
         {
-            y += (Input.GetAxisRaw("Vertical") > 0) ? -1 : 1;
-            x += pos.Direction; // testog
+            int upDown = (Input.GetAxisRaw("Vertical") > 0) ? -1 : 1;
+            y += upDown;
+            //if (upDown < 0) // Direction only when going up? Actually let's make water reset direction
+            //{
+                x += pos.Direction; 
+            //}
             triedMove = true;
         }
 

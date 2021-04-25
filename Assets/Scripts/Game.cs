@@ -281,7 +281,8 @@ public class Game : MonoBehaviour
 
                 Gravity gravity = pos.GetComponent<Gravity>();
                 int direction = gravity ? gravity.Direction : 0;
-                if ((!generatedLevel.IsWater(pos.X, pos.Y)) && direction != 0) // Things float in water.
+                bool isWater = generatedLevel.IsWater(pos.X, pos.Y);
+                if ((!isWater) && direction != 0) // Things float in water.
                 {
                     int x = pos.X;
                     int y = pos.Y + direction;
@@ -291,6 +292,10 @@ public class Game : MonoBehaviour
                         pos.Y = y;
                         somethingMoved = true;
                     }
+                }
+                if (isWater)
+                {
+                    pos.Direction = 0; // Resets direction
                 }
 
                 if (thePlayer == pos)
