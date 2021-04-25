@@ -22,3 +22,7 @@ MonoBehaviour:
     DeathFloor: {fileID: 3084385760389221117, guid: 8c7923d0c14dc884d9c5b0dacc5021d7,
       type: 3}
     Exit: {fileID: 3084385760389221117, guid: 14d5ff0509c62a74bb342d77aa654b23, type: 3}
+    WallSupport: {fileID: 3056469456349167456, guid: 6321a5e5c886b5b4fbf355ad1961731f,
+      type: 3}
+    DraggableSupport: {fileID: 3056469456349167456, guid: 3504f5cc94c29944789bc2f7d8158106,
+      type: 3}

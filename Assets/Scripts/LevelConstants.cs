@@ -10,4 +10,6 @@ public struct LevelConstants
     public GameObject DeathCeiling;
     public GameObject DeathFloor;
     public GameObject Exit;
+    public GameObject WallSupport;
+    public GameObject DraggableSupport;
 }

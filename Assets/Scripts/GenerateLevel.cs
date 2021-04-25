@@ -39,32 +39,56 @@ public static class GenerateLevel
         int row = 0;
         int column = 0;
         celPosition.x = constants.TopLeft.x;
-        foreach (int tile in jsonLevel.layers[0].data)
+        int celCount = jsonLevel.layers[0].data.Length;
+        for (int i = 0; i < celCount; i++)
         {
+            int tile = jsonLevel.layers[0].data[i];
             switch (tile)
             {
                 case Constants.WallPiece:
                     GameObject.Instantiate(level.LevelConstants.Wall, celPosition, Quaternion.identity, constants.Parent);
                     break;
 
+                case Constants.SupportPiece:
+                    GameObject.Instantiate(level.LevelConstants.WallSupport, celPosition, Quaternion.identity, constants.Parent);
+                    break;
+
                 case Constants.Exit:
                     GameObject.Instantiate(level.LevelConstants.Exit, celPosition, Quaternion.identity, constants.Parent);
                     break;
 
+            }
+
+            int maybeObject = jsonLevel.layers[1].data[i];
+            GameObject createdObject = null;
+            switch (maybeObject)
+            {
                 case Constants.PlayerPiece:
-                    if (!playerObject)
                     {
-                        playerObject = GameObject.Instantiate(level.LevelConstants.Player, celPosition, Quaternion.identity, constants.Parent);
+                        if (!playerObject)
+                        {
+                            playerObject = GameObject.Instantiate(level.LevelConstants.Player, celPosition, Quaternion.identity, constants.Parent);
+                        }
+                        else
+                        {
+                            playerObject.transform.position = celPosition;
+                        }
+                        createdObject = playerObject;
                     }
-                    else
-                    {
-                        playerObject.transform.position = celPosition;
-                    }
-                    ObjectWithPosition pc = playerObject.GetComponent<ObjectWithPosition>();
-                    objectsWithPosition.Add(pc);
-                    pc.X = column;
-                    pc.Y = row;
                     break;
+
+                case Constants.DraggableSupport:
+                    {
+                        createdObject = GameObject.Instantiate(level.LevelConstants.DraggableSupport, celPosition, Quaternion.identity, constants.Parent);
+                    }
+                    break;
+            }
+            if (createdObject)
+            {
+                ObjectWithPosition pc = createdObject.GetComponent<ObjectWithPosition>();
+                objectsWithPosition.Add(pc);
+                pc.X = column;
+                pc.Y = row;
             }
 
             column++;

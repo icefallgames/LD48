@@ -8,6 +8,7 @@ public struct ObjectLevelState
     public ObjectWithPosition Object;
     public int X;
     public int Y;
+    public int Data;
 }
 
 public class LevelStateFrame
@@ -68,6 +69,7 @@ public class LevelState
             ObjectWithPosition pos = current.Objects[i].Object;
             current.Objects[i].X = pos.X;
             current.Objects[i].Y = pos.Y;
+            current.Objects[i].Data = pos.Data;
         }
     }
 
@@ -80,6 +82,7 @@ public class LevelState
             ObjectWithPosition pos = current.Objects[i].Object;
             pos.X = current.Objects[i].X;
             pos.Y = current.Objects[i].Y;
+            pos.Data = current.Objects[i].Data;
         }
     }
 

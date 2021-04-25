@@ -8,4 +8,6 @@ public class ObjectWithPosition : MonoBehaviour
     public int X;
     [System.NonSerialized]
     public int Y;
+    [System.NonSerialized]
+    public int Data; // Could be used for whatever... in this case, cracking a rock?
 }

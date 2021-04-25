@@ -13,6 +13,8 @@ public class JsonLevel
 {
     public int width;
     public int height;
+    // First layer is base tilemap
+    // Second is fixed objects.
     public JsonLevelLayer[] layers;
 
     public static JsonLevel CreateFromJSON(string jsonString)

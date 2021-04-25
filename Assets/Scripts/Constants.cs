@@ -45,4 +45,5 @@ public struct Constants
     public const int SupportPiece = 2;
     public const int PlayerPiece = 3;
     public const int Exit = 4;
+    public const int DraggableSupport = 5;
 }
