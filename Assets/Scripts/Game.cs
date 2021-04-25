@@ -27,6 +27,7 @@ public class Game : MonoBehaviour
     public RandomSound JumpSound;
     public RandomSound FallSound;
     public RandomSound RockBreak;
+    public AudioSource Music;
 
     public GameObject DeathParticles;
 
@@ -165,8 +166,22 @@ public class Game : MonoBehaviour
     static KeyCode[] codes = new KeyCode[] { KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4 };
 
     // Update is called once per frame
+    bool musicOn = true;
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            musicOn = !musicOn;
+            if (musicOn)
+            {
+                Music.Play();
+            }
+            else
+            {
+                Music.Stop();
+            }
+        }
+
         if (!isResetting)
         {
 #if UNITY_EDITOR
