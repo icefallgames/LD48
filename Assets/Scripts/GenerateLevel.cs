@@ -11,11 +11,18 @@ public static class GenerateLevel
 
         // Make the ceiling (fixed to camera)
         Vector3 ceilingPiecePos = constants.TopLeft;
+        Vector3 floorPiecePos = constants.TopLeft;
         ceilingPiecePos.z = -1f; // In front of stuff
+        floorPiecePos.z = -1f;
+        floorPiecePos.y -= (constants.Height - 1) * constants.CelHeight;
         for (int i = 0; i < constants.Width; i++)
         {
             GameObject.Instantiate(level.LevelConstants.DeathCeiling, ceilingPiecePos, Quaternion.identity, fixedParent);
+
+            GameObject.Instantiate(level.LevelConstants.DeathFloor, floorPiecePos, Quaternion.identity, fixedParent);
+
             ceilingPiecePos.x += constants.CelWidth;
+            floorPiecePos.x += constants.CelWidth;
         }
 
         GeneratedLevel generatedLevel = new GeneratedLevel();
@@ -38,6 +45,10 @@ public static class GenerateLevel
             {
                 case Constants.WallPiece:
                     GameObject.Instantiate(level.LevelConstants.Wall, celPosition, Quaternion.identity, constants.Parent);
+                    break;
+
+                case Constants.Exit:
+                    GameObject.Instantiate(level.LevelConstants.Exit, celPosition, Quaternion.identity, constants.Parent);
                     break;
 
                 case Constants.PlayerPiece:

@@ -44,4 +44,5 @@ public struct Constants
     public const int WallPiece = 1;
     public const int SupportPiece = 2;
     public const int PlayerPiece = 3;
+    public const int Exit = 4;
 }

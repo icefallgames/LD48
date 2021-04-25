@@ -9,6 +9,15 @@ public class GeneratedLevel
     public int Height;
     public int[] Pieces;
 
+    public int GetPieceAt(int x, int y)
+    {
+        if (x >= 0 && x < Width && y >= 0 && y < Height)
+        {
+            return Pieces[y * Width + x];
+        }
+        return 0;
+    }
+
     public bool CanMove(int x, int y)
     {
         if (x >= 0 && x < Width && y >= 0 && y < Height)

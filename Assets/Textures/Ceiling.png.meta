@@ -5,6 +5,12 @@ TextureImporter:
   - first:
       213: -641405548389218093
     second: Ceiling_0
+  - first:
+      213: -166292246232443495
+    second: Ceiling_0
+  - first:
+      213: -931208688389645043
+    second: Ceiling_1
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -116,8 +122,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3d8cb435d054917f0800000000000000
-      internalID: -641405548389218093
+      spriteID: 995d966451631bdf0800000000000000
+      internalID: -166292246232443495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ceiling_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d0d17c4b1aea313f0800000000000000
+      internalID: -931208688389645043
       vertices: []
       indices: 
       edges: []

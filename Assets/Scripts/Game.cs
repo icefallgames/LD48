@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 
+public enum MoveResult
+{
+    None,
+    Death,
+    Exit
+}
+
 public class Game : MonoBehaviour
 {
 
@@ -60,6 +67,7 @@ public class Game : MonoBehaviour
         levelState.Current.YCamera = 0;
         generatedLevel = GenerateLevel.Generate(ref constants, Levels[index], ref playerObject, Camera.transform, levelState.Current);
         levelState.SaveStates();
+        lastMoveResult = MoveResult.None;
     }
 
     private GeneratedLevel generatedLevel;
@@ -105,6 +113,20 @@ public class Game : MonoBehaviour
         ManifestLevel(currentLevel);
     }
 
+    private IEnumerator NextLevel()
+    {
+        isResetting = true;
+
+        DestroyLevelObjects();
+
+        yield return new WaitForSeconds(0.5f);
+        isResetting = false;
+
+        // Regenerate with new
+        currentLevel++;
+        ManifestLevel(currentLevel);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -128,11 +150,7 @@ public class Game : MonoBehaviour
                         isLerpingMove = false;
                         // Position the objects at their destinations immediately, so the player doesn't need to wait for the lerp to finish.
                         PositionObjects(levelState.Current);
-
-                        if (CheckForDeath())
-                        {
-                            StartCoroutine(Reset(shouldDie: true));
-                        }
+                        HandleMoveResultDelayed(lastMoveResult);
                     }
                 }
 
@@ -140,8 +158,8 @@ public class Game : MonoBehaviour
                 {
                     if (pc.MovePlayer(generatedLevel, ref constants))
                     {
-                        ProcessMoveResultsImmediately(pc);
-                        lerpCoroutine = StartCoroutine(LerpToNewResults(pc));
+                        lastMoveResult = ProcessMoveResultsImmediately(pc);
+                        lerpCoroutine = StartCoroutine(LerpToNewResults(pc, lastMoveResult));
                     }
                     else if (Input.GetKeyDown(KeyCode.X))
                     {
@@ -149,18 +167,27 @@ public class Game : MonoBehaviour
                         levelState.Pop();
                         levelState.PushStates();
                         PositionObjects(levelState.Current);
+                        lastMoveResult = MoveResult.None;
                     }
                 }
             }
         }
     }
 
+    private MoveResult lastMoveResult;
     private Coroutine lerpCoroutine;
 
+    /*
     private bool CheckForDeath()
     {
         ObjectWithPosition objectWithPosition = playerObject.GetComponent<ObjectWithPosition>();
-        return (objectWithPosition.Y <= levelState.Current.YCamera);
+        return (objectWithPosition.Y <= levelState.Current.YCamera) ||
+            (objectWithPosition.Y >= GetBottomDeathRow());
+    }*/
+
+    private int GetBottomDeathRow()
+    {
+        return (levelState.Current.YCamera + constants.Height - 1);
     }
 
     // Ensures objects visual positions are sync'd with their state
@@ -175,8 +202,10 @@ public class Game : MonoBehaviour
         Camera.transform.position = cameraEndPos;
     }
 
-    private void ProcessMoveResultsImmediately(PlayerController pc)
+    private MoveResult ProcessMoveResultsImmediately(PlayerController pc)
     {
+        MoveResult result = MoveResult.None;
+
         // Add a new state frame
         levelState.AddFrame();
         levelState.Current.YCamera++;
@@ -190,6 +219,17 @@ public class Game : MonoBehaviour
             if (generatedLevel.CanMove(x, y))
             {
                 playerPos.Y = y;
+                if (GetBottomDeathRow() == playerPos.Y)
+                {
+                    result = MoveResult.Death;
+                    break; // They're gonna die.
+                }
+
+                if (Constants.Exit == generatedLevel.GetPieceAt(playerPos.X, playerPos.Y))
+                {
+                    result = MoveResult.Exit;
+                    break;
+                }
             }
             else
             {
@@ -197,14 +237,21 @@ public class Game : MonoBehaviour
             }
         }
 
+        if (playerPos.Y <= levelState.Current.YCamera)
+        {
+            result = MoveResult.Death;
+        }
+
         levelState.SaveStates(); // Does that for the objects only, camera is already updated.
+
+        return result;
     }
 
     private List<Vector3> startLerpWorker = new List<Vector3>();
     private List<Vector3> endLerpWorker = new List<Vector3>();
 
     private bool isLerpingMove = false;
-    IEnumerator LerpToNewResults(PlayerController pc)
+    IEnumerator LerpToNewResults(PlayerController pc, MoveResult moveResult)
     {
         ObjectWithPosition playerPos = pc.GetComponent<ObjectWithPosition>();
 
@@ -278,11 +325,22 @@ public class Game : MonoBehaviour
 
         }
 
-        if (CheckForDeath())
-        {
-            StartCoroutine(Reset(shouldDie: true));
-        }
+        HandleMoveResultDelayed(moveResult);
 
         isLerpingMove = false;
+    }
+
+    void HandleMoveResultDelayed(MoveResult moveResult)
+    {
+        switch (moveResult)
+        {
+            case MoveResult.Death:
+                StartCoroutine(Reset(shouldDie: true));
+                break;
+
+            case MoveResult.Exit:
+                StartCoroutine(NextLevel());
+                break;
+        }
     }
 }
