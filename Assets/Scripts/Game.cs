@@ -101,9 +101,21 @@ public class Game : MonoBehaviour
         if (shouldDie)
         {
             // Blood
-            GameObject.Instantiate(DeathParticles, playerObject.transform.position + new Vector3(0, 0, -2), Quaternion.identity, LevelParent);
-
-            yield return new WaitForSeconds(2.0f);
+            GameObject deathParticles = GameObject.Instantiate(DeathParticles, playerObject.transform.position + new Vector3(0, 0, -2), Quaternion.identity, LevelParent);
+            float time = 0;
+            while (time < 2.0f)
+            {
+                yield return null;
+                if (Input.GetKeyDown(KeyCode.X))
+                {
+                    // Bail - hacky, but ok for now
+                    GameObject.Destroy(deathParticles);
+                    isResetting = false;
+                    GoBack();
+                    yield break;
+                }
+                time += Time.deltaTime;
+            }
         }
 
         DestroyLevelObjects();
@@ -197,11 +209,7 @@ public class Game : MonoBehaviour
                     }
                     else if (Input.GetKeyDown(KeyCode.X))
                     {
-                        // Go back
-                        levelState.Pop();
-                        levelState.PushStates();
-                        PositionObjects(levelState.Current);
-                        lastMoveResult = MoveResult.None;
+                        GoBack();
                     }
                 }
             }
@@ -209,6 +217,15 @@ public class Game : MonoBehaviour
 
             EvaluateTips();
         }
+    }
+
+    private void GoBack()
+    {
+        // Go back
+        levelState.Pop();
+        levelState.PushStates();
+        PositionObjects(levelState.Current);
+        lastMoveResult = MoveResult.None;
     }
 
     private void EvaluateTips()
