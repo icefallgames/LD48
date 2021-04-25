@@ -39,6 +39,12 @@ public class PlayerController : MonoBehaviour
             }
             triedMove = true;
         }
+        else if (Input.GetButtonDown("Jump"))
+        {
+            y -= 1;
+            x += pos.Direction;
+            triedMove = true;
+        }
 
         if (triedMove)
         {

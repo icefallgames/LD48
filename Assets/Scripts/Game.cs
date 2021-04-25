@@ -18,7 +18,7 @@ public class Game : MonoBehaviour
     public Camera Camera;
     private LevelState levelState;
     public Transform LevelParent;
-
+    public Tutorial Tutorial;
     public Level[] Levels;
 
     public GameObject DeathParticles;
@@ -75,6 +75,8 @@ public class Game : MonoBehaviour
 
     private void DestroyLevelObjects()
     {
+        Tutorial.Reset();
+
         // The player
         GameObject.Destroy(playerObject);
         // The level objects
@@ -187,6 +189,9 @@ public class Game : MonoBehaviour
                     ClearMoveWorker();
                     if (pc.MovePlayer(generatedLevel, ref constants, levelState.Objects, moveWorker))
                     {
+
+                        Debug.Log("player at: " + levelState.Current.YCamera);
+
                         lastMoveResult = ProcessMoveResultsImmediately(pc);
                         lerpCoroutine = StartCoroutine(LerpToNewResults(pc, lastMoveResult));
                     }
@@ -199,6 +204,27 @@ public class Game : MonoBehaviour
                         lastMoveResult = MoveResult.None;
                     }
                 }
+            }
+
+
+            EvaluateTips();
+        }
+    }
+
+    private void EvaluateTips()
+    {
+        if (currentLevel == 0)
+        {
+            Tutorial.ActivateTip(Tutorial.MoveTip);
+
+            if (levelState.Current.YCamera > 21)
+            {
+                Tutorial.ActivateTip(Tutorial.JumpTip);
+            }
+
+            if (levelState.Current.YCamera > 42)
+            {
+                Tutorial.ActivateTip(Tutorial.GoBackTip);
             }
         }
     }
