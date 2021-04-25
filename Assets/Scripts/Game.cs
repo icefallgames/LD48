@@ -140,11 +140,26 @@ public class Game : MonoBehaviour
         }
     }
 
+    static KeyCode[] codes = new KeyCode[] { KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4 };
+
     // Update is called once per frame
     void Update()
     {
         if (!isResetting)
         {
+#if UNITY_EDITOR
+            int index = 0;
+            foreach (KeyCode kc in codes)
+            {
+                if (Input.GetKeyDown(kc))
+                {
+                    currentLevel = index;
+                    StartCoroutine(Reset(false));
+                }
+                index++;
+            }
+#endif
+
             if (Input.GetKeyDown(KeyCode.R))
             {
                 StopCoroutine(lerpCoroutine);
