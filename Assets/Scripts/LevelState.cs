@@ -45,7 +45,7 @@ public class LevelState
     public void Pop()
     {
         // Remove last one (unless only 1)
-        if (Frames.Count > 0)
+        if (Frames.Count > 1)
         {
             Frames.RemoveAt(Frames.Count - 1);
         }

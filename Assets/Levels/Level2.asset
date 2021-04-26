@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 497ae554a54b22d4ea78f98520b35ee1, type: 3}
+  m_Name: Level2
+  m_EditorClassIdentifier: 
+  Data: {fileID: 4900000, guid: 8be54f870b3f11b4fb4dabd800388099, type: 3}
+  LevelConstants:
+    Wall: {fileID: 3056469456349167456, guid: 703d0ec13394a484fb6b21d562f9344c, type: 3}
+    Player: {fileID: 3056469456349167456, guid: a7825e1b3bde92b498beaae5e160c0ce,
+      type: 3}
+    DeathCeiling: {fileID: 3084385760389221117, guid: 38cf8b43a4fb84a46a1518c1c483ff01,
+      type: 3}
+    DeathFloor: {fileID: 3084385760389221117, guid: 8c7923d0c14dc884d9c5b0dacc5021d7,
+      type: 3}
+    Exit: {fileID: 3084385760389221117, guid: 14d5ff0509c62a74bb342d77aa654b23, type: 3}
+    WallSupport: {fileID: 3056469456349167456, guid: 6321a5e5c886b5b4fbf355ad1961731f,
+      type: 3}
+    DraggableSupport: {fileID: 3056469456349167456, guid: 3504f5cc94c29944789bc2f7d8158106,
+      type: 3}
+    Water: {fileID: 3056469456349167456, guid: 51856ecd5e95f4b40a28d0e1f0eed50c, type: 3}
+    Crate: {fileID: 3056469456349167456, guid: 858616132dee6aa4fbe1fd9fa1dc7e80, type: 3}
