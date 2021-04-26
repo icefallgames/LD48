@@ -149,7 +149,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &447075133
 GameObject:
@@ -433,11 +433,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1538694916}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &589617559 stripped
@@ -686,7 +686,7 @@ RectTransform:
   - {fileID: 447075134}
   - {fileID: 1511775158}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -757,7 +757,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1341224875
 GameObject:
@@ -838,7 +838,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1387262120
 GameObject:
@@ -1091,6 +1091,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1511775157}
   m_CullTransparentMesh: 0
+--- !u!1 &1538694915
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1538694916}
+  m_Layer: 0
+  m_Name: CameraTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1538694916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1538694915}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 519420032}
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1682330620
 GameObject:
   m_ObjectHideFlags: 0
@@ -1123,12 +1154,100 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MechanicParameters: {fileID: 11400000, guid: 474383a359addd841a9fb77199b2a7e3, type: 2}
   Camera: {fileID: 519420031}
+  CameraTransform: {fileID: 1538694916}
   LevelParent: {fileID: 260547056}
   Tutorial: {fileID: 1682330623}
   Levels:
   - {fileID: 11400000, guid: e91d986c8b5613c4f8dd8f0730e51c6f, type: 2}
   - {fileID: 11400000, guid: 80a567761c8376947abf263f9522178c, type: 2}
   Title: {fileID: 1341224875}
+  ShakeCameraCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2.8075666
+      outSlope: 2.8075666
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.1779366
+      value: 0.49956888
+      inSlope: 0.7647366
+      outSlope: 0.7647366
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.3417515
+      value: 0.29019815
+      inSlope: 4.8688083
+      outSlope: 4.8688083
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.37838948
+      value: 0.6937916
+      inSlope: 4.7602897
+      outSlope: 4.7602897
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.66263336
+      value: 0.26880985
+      inSlope: 6.8323975
+      outSlope: 6.8323975
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.6807889
+      value: 0.5440461
+      inSlope: 6.2508893
+      outSlope: 6.2508893
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.7986941
+      value: 0.23063675
+      inSlope: -1.0826025
+      outSlope: -1.0826025
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.89070207
+      value: 0.27599135
+      inSlope: 1.2534388
+      outSlope: 1.2534388
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.88070005
+    - serializedVersion: 3
+      time: 0.9953308
+      value: 0.002193451
+      inSlope: -2.6168518
+      outSlope: -2.6168518
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   WalkSound: {fileID: 589617560}
   DeathSound: {fileID: 857183226}
   JumpSound: {fileID: 835330287}
@@ -1149,7 +1268,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1682330623
 MonoBehaviour:
@@ -1200,7 +1319,7 @@ Transform:
   - {fileID: 2044927055}
   - {fileID: 489679924}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1883162941
 GameObject:
@@ -1327,7 +1446,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2044927054
 PrefabInstance:
@@ -1565,7 +1684,7 @@ PrefabInstance:
     - target: {fileID: 3056469456349167458, guid: 703d0ec13394a484fb6b21d562f9344c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3056469456349167458, guid: 703d0ec13394a484fb6b21d562f9344c,
         type: 3}

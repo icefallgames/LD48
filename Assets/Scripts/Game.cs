@@ -16,11 +16,13 @@ public class Game : MonoBehaviour
     public MechanicParameters MechanicParameters;
 
     public Camera Camera;
+    public Transform CameraTransform;
     private LevelState levelState;
     public Transform LevelParent;
     public Tutorial Tutorial;
     public Level[] Levels;
     public GameObject Title;
+    public AnimationCurve ShakeCameraCurve;
 
     public RandomSound WalkSound;
     public RandomSound DeathSound;
@@ -41,7 +43,7 @@ public class Game : MonoBehaviour
     {
         levelState = new LevelState();
 
-        cameraRootPosition = Camera.transform.position;
+        cameraRootPosition = CameraTransform.localPosition;
 
         pixelPerfectCamera = Camera.GetComponent<PixelPerfectCamera>();
         constants.Width = pixelPerfectCamera.refResolutionX / 16;
@@ -69,7 +71,13 @@ public class Game : MonoBehaviour
 
     void ManifestLevel(int index)
     {
-        Camera.transform.position = cameraRootPosition;
+        if (index >= Levels.Length)
+        {
+            currentLevel = Levels.Length - 1;
+            index = currentLevel;
+        }
+
+        CameraTransform.localPosition = cameraRootPosition;
         levelState.Clear();
         levelState.AddFrame();
         levelState.Current.YCamera = 0;
@@ -98,7 +106,23 @@ public class Game : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
         generatedLevel = null;
+    }
 
+
+    const float ShakeCameraTime = 0.3f;
+    const float ShakeCameraScale = 0.1f;
+    private IEnumerator ShakeCamera()
+    {
+
+        float time = 0f;
+        while (time < ShakeCameraTime)
+        {
+            float shakeAmount = ShakeCameraCurve.Evaluate(time / ShakeCameraTime);
+            Camera.transform.localPosition = new Vector3(0, shakeAmount * ShakeCameraScale, 0f);
+            yield return null;
+            time += Time.deltaTime;
+        }
+        Camera.transform.localPosition = Vector3.zero;
     }
 
     private bool isResetting = false;
@@ -165,10 +189,27 @@ public class Game : MonoBehaviour
 
     static KeyCode[] codes = new KeyCode[] { KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4 };
 
+
+    float escapeTimer;
+
     // Update is called once per frame
     bool musicOn = true;
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (escapeTimer > 0f)
+            {
+                Application.Quit();
+            }
+            else
+            {
+                escapeTimer = 1.0f;
+            }
+        }
+        escapeTimer -= Time.deltaTime;
+        escapeTimer = Mathf.Max(0f, escapeTimer);
+
         if (Input.GetKeyDown(KeyCode.M))
         {
             musicOn = !musicOn;
@@ -305,7 +346,7 @@ public class Game : MonoBehaviour
             pos.transform.position = constants.GetObjectPosition(pos.transform, pos.X, pos.Y);
         }
         Vector3 cameraEndPos = cameraRootPosition + new Vector3(0, -frame.YCamera * constants.CelHeight, 0);
-        Camera.transform.position = cameraEndPos;
+        CameraTransform.localPosition = cameraEndPos;
     }
 
     private void DescendCamera(LevelStateFrame frame)
@@ -340,6 +381,7 @@ public class Game : MonoBehaviour
         {
             // Blocked!
             RockBreak.Play(true);
+            StartCoroutine(ShakeCamera());
         }
     }
 
@@ -485,14 +527,14 @@ public class Game : MonoBehaviour
 
         {
             // Now move the camera (this might kill the player)
-            Vector3 cameraStartPos = Camera.transform.position;
+            Vector3 cameraStartPos = CameraTransform.localPosition;
             Vector3 cameraEndPos = cameraRootPosition + new Vector3(0, -currentFrame.YCamera * constants.CelHeight, 0);
             float time = 0;
             while (time < MechanicParameters.LevelFallTime)
             {
                 time += Time.deltaTime;
                 time = Mathf.Min(MechanicParameters.LevelFallTime, time);
-                Camera.transform.position = Vector3.Lerp(cameraStartPos, cameraEndPos,
+                CameraTransform.localPosition = Vector3.Lerp(cameraStartPos, cameraEndPos,
                     MechanicParameters.LevelFallCurve.Evaluate(time / MechanicParameters.LevelFallTime)
                     );
 
